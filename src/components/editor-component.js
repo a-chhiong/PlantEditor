@@ -1,0 +1,423 @@
+import { LitElement, html, css, unsafeCSS } from 'lit';
+
+export class EditorComponent extends LitElement {
+    static properties = {
+        umlCode: { type: String },
+        showLineNumbers: { type: Boolean },
+        lineNumbers: { type: Array, state: true }
+    };
+
+    static styles = css`
+        :host {
+            container-type: inline-size;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .editor-container {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 0;
+            min-width: 0;
+            background: var(--bg-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        /* Editor Header Panel */
+        .editor-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 56px;
+            padding: 0 16px;
+            background: var(--bg-panel-header);
+            border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .header-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Action Buttons */
+        .action-btn {
+            background: var(--midi-btn-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-family: var(--font-ui);
+            font-size: 1rem;
+            font-weight: 600;
+            height: 36px;
+            width: 36px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            outline: none;
+            box-sizing: border-box;
+            flex-shrink: 0;
+        }
+
+        .action-btn:hover, .presets-select:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border-color: var(--border-hover);
+        }
+
+        .presets-select option {
+            background: var(--bg-toolbar);
+            color: var(--text-primary);
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(135deg, var(--accent-indigo) 0%, var(--accent-violet) 100%);
+            border: none;
+            color: var(--text-primary);
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.25);
+        }
+
+        .action-btn.primary:hover {
+            background: linear-gradient(135deg, var(--accent-indigo) 20%, var(--accent-violet) 100%);
+            box-shadow: 0 2px 12px rgba(139, 92, 246, 0.4);
+        }
+
+        .action-btn.danger:hover {
+            background: rgba(244, 63, 94, 0.15);
+            border-color: var(--accent-rose);
+            color: var(--accent-rose);
+        }
+
+        /* Active state for toolbar toggle buttons */
+        .action-btn.active {
+            background: linear-gradient(135deg, var(--accent-indigo) 0%, var(--accent-violet) 100%);
+            border-color: var(--accent-violet);
+            color: var(--text-primary);
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.35);
+        }
+
+        .editor-body {
+            display: flex;
+            flex: 1;
+            min-height: 0;
+            position: relative;
+        }
+
+        .line-numbers-gutter {
+            width: 48px;
+            background: var(--midi-btn-bg);
+            border-right: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-family: var(--font-code);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            text-align: right;
+            padding: 16px 8px 16px 0;
+            user-select: none;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .line-numbers-gutter div {
+            padding-right: 4px;
+        }
+
+        /* Code Editor Input Area */
+        .editor-content {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 0;
+            min-width: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .editor-input {
+            width: 100%;
+            height: 100%;
+            padding: 16px;
+            font-family: var(--font-code);
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            background: transparent;
+            border: none;
+            resize: none;
+            line-height: 1.6;
+            outline: none;
+            overflow-y: auto;
+            overflow-x: auto;
+            white-space: pre;
+            word-wrap: normal;
+            tab-size: 4;
+            caret-color: var(--accent-violet);
+        }
+
+
+
+        @media (max-width: 1024px) {
+            .action-btn {
+                height: 24px;
+                width: 24px;
+                font-size: 0.75rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .editor-header {
+                height: 48px;
+                padding: 0 10px;
+            }
+
+            .editor-input {
+                font-size: 0.8rem;
+                padding: 12px;
+            }
+
+            .line-numbers-gutter {
+                font-size: 0.8rem;
+                padding: 12px 6px 12px 0;
+                width: 38px;
+            }
+
+
+        }
+
+        @media (max-width: 480px) {
+            .editor-header {
+                height: 48px;
+                padding: 0 8px;
+                gap: 4px;
+            }
+            .action-btn {
+                height: 24px;
+                width: 24px;
+            }
+            .header-controls {
+                gap: 4px;
+            }
+        }
+
+        /* Container queries for dynamic splitter resizing sensitivity */
+        @container (max-width: 680px) {
+            .title-text {
+                display: none !important;
+            }
+        }
+
+        @container (max-width: 520px) {
+            .action-btn {
+                height: 24px;
+                width: 24px;
+                font-size: 0.72rem;
+            }
+        }
+
+        @container (max-width: 380px) {
+            .editor-header {
+                height: 44px;
+                padding: 0 8px;
+                gap: 6px;
+            }
+
+            .header-controls {
+                gap: 4px;
+            }
+
+            .action-btn {
+                height: 24px;
+                width: 24px;
+            }
+        }
+    `;
+
+    constructor() {
+        super();
+        this.umlCode = '';
+        this.showLineNumbers = localStorage.getItem('plantEditorShowLineNumbers') !== 'false';
+        this.lineNumbers = [];
+    }
+
+    willUpdate(changedProperties) {
+        if (changedProperties.has('umlCode')) {
+            const lineCount = Math.max(1, (this.umlCode || '').split('\n').length);
+            this.lineNumbers = Array.from({ length: lineCount }, (_, i) => i + 1);
+        }
+    }
+
+    updated(changedProperties) {
+        if (changedProperties.has('showLineNumbers') && this.showLineNumbers) {
+            const textarea = this.shadowRoot.querySelector('.editor-input');
+            const gutter = this.shadowRoot.querySelector('.line-numbers-gutter');
+            if (textarea && gutter) {
+                gutter.scrollTop = textarea.scrollTop;
+            }
+        }
+    }
+
+    toggleLineNumbers() {
+        this.showLineNumbers = !this.showLineNumbers;
+        localStorage.setItem('plantEditorShowLineNumbers', String(this.showLineNumbers));
+    }
+
+    handleScroll(e) {
+        const textarea = e.target;
+        const gutter = this.shadowRoot.querySelector('.line-numbers-gutter');
+        if (gutter) {
+            gutter.scrollTop = textarea.scrollTop;
+        }
+    }
+
+
+
+    handleInput(e) {
+        this._dispatchUMLChanged(e.target.value);
+    }
+
+    _dispatchUMLChanged(value) {
+        this.dispatchEvent(new CustomEvent('uml-changed', {
+            detail: value,
+            bubbles: true,
+            composed: true,
+        }));
+    }
+
+    triggerFileInput() {
+        const fileInput = this.shadowRoot.getElementById('uml-file-input');
+        if (fileInput) {
+            fileInput.click();
+        }
+    }
+
+    handleLoadUMLFile(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const content = event.target.result;
+            this.umlCode = content;
+            this._dispatchUMLChanged(content);
+            e.target.value = '';
+        };
+        reader.readAsText(file);
+    }
+
+    _parseUMLTitle() {
+        if (!this.umlCode) return '';
+        const match = this.umlCode.match(/^\s*title\s+(.*)$/mi);
+        return match ? match[1].trim() : '';
+    }
+
+    handleSaveUMLFile() {
+        if (!this.umlCode || !this.umlCode.trim()) {
+            alert('Please write some PlantUML code first!');
+            return;
+        }
+
+        try {
+            const title = this._parseUMLTitle() || 'diagram';
+            const cleanTitle = title.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'diagram';
+
+            const blob = new Blob([this.umlCode], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${cleanTitle}.puml`;
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        } catch (error) {
+            alert('Failed to save file: ' + error.message);
+        }
+    }
+
+    handleClear() {
+        if (!this.umlCode || !this.umlCode.trim()) return;
+
+        if (confirm('⚠️ WARNING: This will delete everything in the editor.\n\nAre you sure you want to clear all contents? This action cannot be undone.')) {
+            this.umlCode = '';
+            this._dispatchUMLChanged('');
+        }
+    }
+
+    // Preset changes are now handled by header-component
+
+
+
+    render() {
+        return html`
+            <div class="editor-container">
+                <div class="editor-header">
+                    <div class="header-title">
+                        ✏️ <span class="title-text">PlantUML Editor</span>
+                    </div>
+                    <div class="header-controls">
+                        <input type="file" id="uml-file-input" accept=".puml,.uml,.txt" style="display: none;" @change="${this.handleLoadUMLFile}">
+
+                        <button
+                            class="action-btn toggle-lines-btn ${this.showLineNumbers ? 'active' : ''}"
+                            @click="${this.toggleLineNumbers}"
+                            title="Toggle line numbers"
+                        >
+                            🔢
+                        </button>
+
+                        <button class="action-btn" @click="${this.triggerFileInput}" title="Load .puml file from device">
+                            📂
+                        </button>
+                        <button class="action-btn" @click="${this.handleSaveUMLFile}" title="Save current diagram code as a .puml file">
+                            💾
+                        </button>
+                        <button class="action-btn danger" @click="${this.handleClear}" title="Clear all text">
+                            🗑️
+                        </button>
+                    </div>
+                </div>
+
+                <div class="editor-content">
+                    <div class="editor-body">
+                        ${this.showLineNumbers ? html`
+                            <div class="line-numbers-gutter">
+                                ${this.lineNumbers.map(n => html`<div>${n}</div>`)}
+                            </div>
+                        ` : ''}
+                        <textarea
+                            class="editor-input"
+                            placeholder="Write your PlantUML here (e.g. starting with @startuml)..."
+                            spellcheck="false"
+                            wrap="off"
+                            .value="${this.umlCode}"
+                            @input="${this.handleInput.bind(this)}"
+                            @scroll="${this.handleScroll}"
+                        ></textarea>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+}

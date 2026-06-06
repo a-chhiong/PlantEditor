@@ -1,0 +1,166 @@
+/* 
+ * PlantEditor - Premium Design System (Global Styles)
+ * Fully responsive workspace that locks the root scroll and defines theme tokens.
+ */
+
+:root {
+    /* Color Palette - Default Light Theme */
+    --bg-primary: #f8fafc;       /* Slate-50 light background */
+    --bg-secondary: #ffffff;     /* Pure white panel base */
+    --bg-glass: rgba(255, 255, 255, 0.7); /* Translucent light glass panel */
+    --bg-glass-active: rgba(241, 245, 249, 0.9);
+    --bg-paper: #ffffff;         /* Pure white sheet music paper */
+    --bg-app-gradient: radial-gradient(circle at 10% 20%, #f1f5f9 0%, #cbd5e1 90%);
+    --bg-panel-header: rgba(241, 245, 249, 0.85);
+    --bg-zoom-controls: rgba(0, 0, 0, 0.05);
+    --bg-toolbar: rgba(248, 250, 252, 0.95);
+    
+    /* Borders & Accents */
+    --border-color: rgba(0, 0, 0, 0.08);
+    --border-hover: rgba(0, 0, 0, 0.16);
+    --border-glow: rgba(139, 92, 246, 0.2);
+    
+    /* Brand Accents */
+    --accent-blue: #2563eb;      
+    --accent-indigo: #4f46e5;
+    --accent-violet: #7c3aed;    
+    --accent-emerald: #059669;
+    --accent-rose: #dc2626;
+    
+    /* Typography */
+    --text-primary: #0f172a;     /* Dark slate for main text */
+    --text-secondary: #475569;   /* Muted slate */
+    --text-muted: #94a3b8;
+    --text-dark: #0f172a;        /* Black/dark text on paper */
+    
+    --font-ui: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --font-code: 'Fira Code', 'Courier New', monospace;
+    
+    /* Transitions */
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Shadow systems */
+    --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.06);
+    --shadow-paper: 0 10px 30px rgba(0, 0, 0, 0.08);
+
+    /* Specific element themes */
+    --scroll-thumb: rgba(0, 0, 0, 0.15);
+    --scroll-thumb-hover: rgba(0, 0, 0, 0.3);
+    
+    --warning-bg: rgba(220, 38, 38, 0.06);
+    --warning-border: rgba(220, 38, 38, 0.15);
+    --warning-text: #b91c1c;
+    --warning-item-bg: rgba(0, 0, 0, 0.03);
+
+    --midi-btn-bg: rgba(0, 0, 0, 0.04);
+    --midi-progress-bg: rgba(0, 0, 0, 0.08);
+    --bg-splitter-line: rgba(0, 0, 0, 0.15);
+}
+
+html[data-theme="dark"] {
+    /* Color Palette - Dark Theme Overrides */
+    --bg-primary: #0b0f19;       /* Deep obsidian dark background */
+    --bg-secondary: #131a2c;     /* Dark panel base */
+    --bg-glass: rgba(19, 26, 44, 0.65); /* Translucent glass panel */
+    --bg-glass-active: rgba(30, 41, 69, 0.8);
+    --bg-paper: #fcfbfa;         /* Elegant warm sheet music paper */
+    --bg-app-gradient: radial-gradient(circle at 10% 20%, #1e1b4b 0%, #0f172a 90%);
+    --bg-panel-header: rgba(22, 30, 49, 0.7);
+    --bg-zoom-controls: rgba(0, 0, 0, 0.2);
+    --bg-toolbar: rgba(15, 23, 42, 0.95);
+    
+    /* Borders & Accents */
+    --border-color: rgba(255, 255, 255, 0.08);
+    --border-hover: rgba(255, 255, 255, 0.18);
+    --border-glow: rgba(139, 92, 246, 0.3);
+    
+    /* Brand Accents */
+    --accent-blue: #3b82f6;      
+    --accent-indigo: #6366f1;
+    --accent-violet: #8b5cf6;    
+    --accent-emerald: #10b981;
+    --accent-rose: #f43f5e;
+    
+    /* Typography */
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --text-dark: #1e293b;
+    
+    /* Shadow systems */
+    --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --shadow-paper: 0 10px 30px rgba(0, 0, 0, 0.3);
+
+    /* Specific element themes */
+    --scroll-thumb: rgba(255, 255, 255, 0.1);
+    --scroll-thumb-hover: rgba(255, 255, 255, 0.25);
+    
+    --warning-bg: rgba(244, 63, 94, 0.08);
+    --warning-border: rgba(244, 63, 94, 0.2);
+    --warning-text: #fda4af;
+    --warning-item-bg: rgba(0, 0, 0, 0.2);
+
+    --midi-btn-bg: rgba(255, 255, 255, 0.05);
+    --midi-progress-bg: rgba(255, 255, 255, 0.1);
+    --bg-splitter-line: rgba(255, 255, 255, 0.16);
+}
+
+/* CSS Reset & Workspace Lock */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* Lock root scroll */
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+/* Root custom element sizing */
+plant-app {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* Custom Scrollbar Styles for Glass Panels */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--scroll-thumb);
+    border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scroll-thumb-hover);
+}
+
+/* Faux Fullscreen Mode for iOS Safari / WebKit */
+html.faux-fullscreen, html.faux-fullscreen body {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    overflow: hidden !important;
+    z-index: 99999 !important;
+}
