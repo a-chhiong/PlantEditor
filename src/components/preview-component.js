@@ -136,7 +136,7 @@ export class PreviewComponent extends LitElement {
             padding: 24px;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start; /* Anchor to left so zoomed paper never clips left edge */
             min-height: 0;
         }
 
@@ -147,7 +147,7 @@ export class PreviewComponent extends LitElement {
             box-shadow: var(--shadow-paper);
             padding: 20px;
             transition: width var(--transition-normal), min-width var(--transition-normal);
-            margin-bottom: 20px;
+            margin: 0 auto 20px auto; /* Self-center when paper fits; auto margins collapse when paper is wider */
             box-sizing: border-box;
             border: 1px solid rgba(0, 0, 0, 0.06);
             display: flex;
@@ -268,6 +268,18 @@ export class PreviewComponent extends LitElement {
 
         .action-btn:active {
             transform: translateY(0);
+        }
+
+        @media (max-width: 1023px) {
+            .diagram-paper {
+                display: block;
+                overflow: visible;
+            }
+
+            .notation-display svg {
+                width: 100% !important;
+                height: auto !important;
+            }
         }
 
         @media (max-width: 768px) {
