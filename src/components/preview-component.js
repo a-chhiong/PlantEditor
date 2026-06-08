@@ -136,7 +136,7 @@ export class PreviewComponent extends LitElement {
             overflow: auto;
             padding: 24px;
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             align-items: flex-start; /* Anchor to left so zoomed paper never clips left edge */
             min-height: 0;
         }
@@ -269,6 +269,12 @@ export class PreviewComponent extends LitElement {
 
         .action-btn:active {
             transform: translateY(0);
+        }
+
+        :host(:not([desktop])) .preview-canvas {
+            /* Flows horizontally so wide SVGs expand into the right-side scroll zone */
+            flex-direction: column; 
+            align-items: flex-start; /* Anchor to left so zoomed paper never clips left edge */
         }
 
         :host(:not([desktop])) .diagram-paper {
